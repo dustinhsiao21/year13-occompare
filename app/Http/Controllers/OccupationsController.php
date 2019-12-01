@@ -10,6 +10,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Log;
 use Exception;
+use Cache;
 
 class OccupationsController extends BaseController
 {
@@ -31,8 +32,8 @@ class OccupationsController extends BaseController
     {
         try{
             $this->occparser->setScope('skills');
-            $occupation_1 = $this->occparser->get($request->get('occupation_1'));
-            $occupation_2 = $this->occparser->get($request->get('occupation_2'));
+            $occupation_1= $this->getOccupation($request->get('occupation_1'));
+            $occupation_2= $this->getOccupation($request->get('occupation_2'));
         } catch(Exception $e) {
             //save the error message in log file.
             Log::error($e->getMessage());
@@ -60,5 +61,18 @@ class OccupationsController extends BaseController
             // 'occupation_2' => $occupation_2,
             'match' => $match,
         ];
+    }
+
+    private function getOccupation(string $occupation_code) : array
+    {
+        // use cache for optimization
+        if(Cache::get($occupation_code)){
+            $occupation = Cache::get($occupation_code);
+        }else{
+            $occupation = $this->occparser->get($occupation_code);
+            Cache::put($occupation_code, $occupation, 60 * 24 * 30); // cache for one month
+        }
+
+        return $occupation;
     }
 }
