@@ -33,7 +33,7 @@ class OccupationsController extends BaseController
             $this->occparser->setScope('skills');
             $occupation_1 = $this->occparser->get($request->get('occupation_1'));
             $occupation_2 = $this->occparser->get($request->get('occupation_2'));
-        } catch(Exception $e){
+        } catch(Exception $e) {
             //save the error message in log file.
             Log::error($e->getMessage());
             throw new Exception("Ooops, We've got some errors");
@@ -43,18 +43,19 @@ class OccupationsController extends BaseController
         $match = 0;
 
         foreach($occupation_2 as $label => $value) {
-            //If label did match, calculate the match value
+            // if label did match, calculate the matching value
             if(isset($occupation_1[$label])) {
                 $value = (100 - abs(($occupation_1[$label] - $value))) / 100;
-                $match+=$value;
+                $match += $value;
             }
         }
+
         // calculate matching percentage
         $match = round(($match / count($occupation_1)) * 100, 2);
         /** IMPLEMENT COMPARISON **/
 
         return [
-            // Didn't use in front-end
+            // Not used in front-end
             // 'occupation_1' => $occupation_1,
             // 'occupation_2' => $occupation_2,
             'match' => $match,

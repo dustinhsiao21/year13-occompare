@@ -44,8 +44,7 @@
             </template>
             <template v-else-if="loading">
                 <div class="col-12 text-center">
-                    Please wait...
-                <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                    Please wait...<i class="fa fa-refresh fa-spin"></i>
                 </div>
             </template>
         </div>

@@ -43,6 +43,7 @@ class OnetOccupationParser implements OccupationParser
         $items = [];
         $rows = $dom->find('.section_' . $this->getScope() . ' table tr');
         
+        // if there is no skills in the occupation, throw exception.
         if($rows->count() == 0){
             throw new Exception("Can not find skills of O*NET-SOC Code: $occupation_code");
         }
@@ -52,7 +53,7 @@ class OnetOccupationParser implements OccupationParser
             $value = $value_el->count() ? ($value_el[0])->text : null;
             $label_el = $row->find('.report2 .moreinfo b');
             $label = $label_el->count() ? ($label_el[0])->text : null;
-            // Description not be used in matching algorithm
+            // Not used in matching algorithm
             // $description_el = $row->find('.report2 .moreinfo');
             // $description = $description_el->count() ? ($description_el[0])->text : null;
 
@@ -64,7 +65,8 @@ class OnetOccupationParser implements OccupationParser
             //         'description' => trim(str_replace(['&#8212;'], '', $description))
             //     ];
             // }
-
+            
+            // Change the data structure for optimization
             if ($value && $label) {
                 $items[trim($label)] = $value;
             }
