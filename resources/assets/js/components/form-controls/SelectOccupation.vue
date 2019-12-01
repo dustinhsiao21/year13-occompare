@@ -1,5 +1,5 @@
 <template>
-    <selectize v-model="selected">
+    <selectize v-model="selected" :disabled="loading">
         <option :value="null">Please select</option>
         <option v-for="(occupation, index) in occupations" :key="index" :value="occupation.code">{{ occupation.title }}</option>
     </selectize>
@@ -15,13 +15,18 @@
         },
         data() {
             return {
-                occupations: [],
                 selected: null
             };
         },
         props: {
             value: {
                 default: null
+            },
+            occupations: {
+                default: []
+            },
+            loading: {
+                default: false,
             }
         },
         watch: {
@@ -29,11 +34,6 @@
                 this.$emit('input', this.selected);
             }
         },
-        async created() {
-            let response = await this.axios.get('/api/occupations');
-            this.occupations = response.data;
-            this.selected = this.value;
-        }
     }
 </script>
 

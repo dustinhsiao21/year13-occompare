@@ -52459,8 +52459,20 @@ module.exports = function listToStyles (parentId, list) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_form_controls_SelectOccupation__ = __webpack_require__(51);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_form_controls_SelectOccupation___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_form_controls_SelectOccupation__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__ = __webpack_require__(56);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_form_controls_SelectOccupation__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_form_controls_SelectOccupation___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_form_controls_SelectOccupation__);
+
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -52514,14 +52526,45 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: 'home-page',
     components: {
-        SelectOccupation: __WEBPACK_IMPORTED_MODULE_0__components_form_controls_SelectOccupation___default.a
+        SelectOccupation: __WEBPACK_IMPORTED_MODULE_1__components_form_controls_SelectOccupation___default.a
     },
+    created: function () {
+        var _ref = _asyncToGenerator( /*#__PURE__*/__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee() {
+            var response;
+            return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.wrap(function _callee$(_context) {
+                while (1) {
+                    switch (_context.prev = _context.next) {
+                        case 0:
+                            _context.next = 2;
+                            return this.axios.get('/api/occupations');
+
+                        case 2:
+                            response = _context.sent;
+
+                            this.occupations = response.data;
+
+                        case 4:
+                        case 'end':
+                            return _context.stop();
+                    }
+                }
+            }, _callee, this);
+        }));
+
+        function created() {
+            return _ref.apply(this, arguments);
+        }
+
+        return created;
+    }(),
     data: function data() {
         return {
             loading: false,
             occupation_1: null,
             occupation_2: null,
-            match: null
+            match: null,
+            occupations: [],
+            errorMessage: null
         };
     },
 
@@ -52530,13 +52573,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this = this;
 
             this.loading = true;
-            this.axios.post('/api/compare', {
+            this.errorMessage = null;
+            this.match = null, this.axios.post('/api/compare', {
                 occupation_1: this.occupation_1,
                 occupation_2: this.occupation_2
             }).then(function (response) {
                 _this.loading = false;
                 _this.match = response.data.match;
-            }).catch(function () {
+            }).catch(function (error) {
+                _this.errorMessage = error.response.data.message;
                 _this.loading = false;
             });
         }
@@ -52654,14 +52699,8 @@ exports.push([module.i, "/**\n * selectize.default.css (v0.12.6) - Default Theme
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__ = __webpack_require__(56);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue2_selectize__ = __webpack_require__(59);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue2_selectize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue2_selectize__);
-
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue2_selectize__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue2_selectize___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue2_selectize__);
 //
 //
 //
@@ -52675,11 +52714,10 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: 'select-occupation',
     components: {
-        Selectize: __WEBPACK_IMPORTED_MODULE_1_vue2_selectize___default.a
+        Selectize: __WEBPACK_IMPORTED_MODULE_0_vue2_selectize___default.a
     },
     data: function data() {
         return {
-            occupations: [],
             selected: null
         };
     },
@@ -52687,43 +52725,19 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
     props: {
         value: {
             default: null
+        },
+        occupations: {
+            default: []
+        },
+        loading: {
+            default: false
         }
     },
     watch: {
         selected: function selected() {
             this.$emit('input', this.selected);
         }
-    },
-    created: function () {
-        var _ref = _asyncToGenerator( /*#__PURE__*/__WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.mark(function _callee() {
-            var response;
-            return __WEBPACK_IMPORTED_MODULE_0_babel_runtime_regenerator___default.a.wrap(function _callee$(_context) {
-                while (1) {
-                    switch (_context.prev = _context.next) {
-                        case 0:
-                            _context.next = 2;
-                            return this.axios.get('/api/occupations');
-
-                        case 2:
-                            response = _context.sent;
-
-                            this.occupations = response.data;
-                            this.selected = this.value;
-
-                        case 5:
-                        case 'end':
-                            return _context.stop();
-                    }
-                }
-            }, _callee, this);
-        }));
-
-        function created() {
-            return _ref.apply(this, arguments);
-        }
-
-        return created;
-    }()
+    }
 });
 
 /***/ }),
@@ -53525,6 +53539,7 @@ var render = function() {
   return _c(
     "selectize",
     {
+      attrs: { disabled: _vm.loading },
       model: {
         value: _vm.selected,
         callback: function($$v) {
@@ -53577,6 +53592,7 @@ var render = function() {
                 _c("label", [_vm._v("Occupation 1")]),
                 _vm._v(" "),
                 _c("select-occupation", {
+                  attrs: { occupations: _vm.occupations, loading: _vm.loading },
                   model: {
                     value: _vm.occupation_1,
                     callback: function($$v) {
@@ -53596,6 +53612,7 @@ var render = function() {
                 _c("label", [_vm._v("Occupation 2")]),
                 _vm._v(" "),
                 _c("select-occupation", {
+                  attrs: { occupations: _vm.occupations, loading: _vm.loading },
                   model: {
                     value: _vm.occupation_2,
                     callback: function($$v) {
@@ -53645,33 +53662,54 @@ var render = function() {
       "div",
       { staticClass: "row" },
       [
-        _vm.match && !_vm.loading
+        _vm.errorMessage !== null
           ? [
-              _c("div", { staticClass: "col-12 text-center" }, [
-                _c("h1", [_vm._v(_vm._s(_vm.match) + "%")])
+              _c("div", { staticClass: "col-12 text-center text-danger" }, [
+                _vm._v(
+                  "\n                " +
+                    _vm._s(_vm.errorMessage) +
+                    "\n            "
+                )
               ])
             ]
-          : !_vm.match && !_vm.loading
+          : _vm.match !== null && !_vm.loading
+          ? [
+              _c("div", { staticClass: "col-12 text-center" }, [
+                _c("h1", [
+                  _vm._v("Matching Percentage: " + _vm._s(_vm.match) + " %")
+                ])
+              ])
+            ]
+          : _vm.match === null && !_vm.loading
           ? [
               _c("div", { staticClass: "col-12 text-center" }, [
                 _vm._v(
-                  "\n                Please select two Occupations from above and click Compare\n            "
+                  "\n                Please select two Occupations from above and click Compare.\n            "
                 )
               ])
             ]
           : _vm.loading
-          ? [
-              _c("div", { staticClass: "col-12 text-center" }, [
-                _vm._v("\n                Please wait...\n            ")
-              ])
-            ]
+          ? [_vm._m(0)]
           : _vm._e()
       ],
       2
     )
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12 text-center" }, [
+      _vm._v("\n                Please wait...\n            "),
+      _c("div", {
+        staticClass: "spinner-border ml-auto",
+        attrs: { role: "status", "aria-hidden": "true" }
+      })
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -53951,7 +53989,7 @@ var render = function() {
     "div",
     { staticClass: "body", style: { "--brand-color": "#fbb040" } },
     [
-      _c("top-bar"),
+      _c("top-bar", { attrs: { name: "Dustin" } }),
       _vm._v(" "),
       _c("transition", { attrs: { name: "fade" } }, [_c("router-view")], 1)
     ],

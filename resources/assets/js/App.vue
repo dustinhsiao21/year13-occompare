@@ -1,6 +1,6 @@
 <template>
     <div class="body" :style="{'--brand-color': '#fbb040'}">
-        <top-bar></top-bar>
+        <top-bar name="Dustin"></top-bar>
         <transition name="fade">
             <router-view></router-view>
         </transition>
