@@ -46,11 +46,10 @@ class OccupationsController extends BaseController
         foreach($occupation_2 as $label => $value) {
             // if label did match, calculate the matching value
             if(isset($occupation_1[$label])) {
-                $value = (100 - abs(($occupation_1[$label] - $value))) / 100;
-                $match += $value;
+                $matchValue = 1 - ((abs($occupation_1[$label] - $value)) / $occupation_1[$label]);
+                $match += $matchValue;
             }
         }
-
         // calculate matching percentage
         $match = round(($match / count($occupation_1)) * 100, 2);
         /** IMPLEMENT COMPARISON **/
