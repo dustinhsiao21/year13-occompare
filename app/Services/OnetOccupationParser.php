@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Contracts\OccupationParser;
 use Exception;
 use PHPHtmlParser\Dom;
+use Cache;
 
 class OnetOccupationParser implements OccupationParser
 {
@@ -33,45 +34,39 @@ class OnetOccupationParser implements OccupationParser
 
     public function get($occupation_code)
     {
-        $dom = new Dom();
-        $url = $this->getUrl($occupation_code);
-        $dom->loadFromUrl($url, [
-            'removeScripts' => true,
-            'removeStyles' => true
-        ]);
+        return Cache::remember($occupation_code, 60 * 24 * 30, function () use ($occupation_code){
+            $dom = new Dom();
+            $url = $this->getUrl($occupation_code);
+            $dom->loadFromUrl($url, [
+                'removeScripts' => true,
+                'removeStyles' => true
+            ]);
 
-        $items = [];
-        $rows = $dom->find('.section_' . $this->getScope() . ' table tr');
-        
-        // if there is no skills in the occupation, throw exception.
-        if($rows->count() == 0){
-            throw new Exception("Can not find skills of O*NET-SOC Code: $occupation_code");
-        }
-
-        foreach ($rows as $row) {
-            $value_el = $row->find('.report2a b');
-            $value = $value_el->count() ? ($value_el[0])->text : null;
-            $label_el = $row->find('.report2 .moreinfo b');
-            $label = $label_el->count() ? ($label_el[0])->text : null;
-            // Not used in matching algorithm
-            // $description_el = $row->find('.report2 .moreinfo');
-            // $description = $description_el->count() ? ($description_el[0])->text : null;
-
-            // Change the data structure for optimization
-            // if ($value && $label) {
-            //     $items[] = [
-            //         'label' => trim($label),
-            //         'value' => $value,
-            //         'description' => trim(str_replace(['&#8212;'], '', $description))
-            //     ];
-            // }
+            $items = [];
+            $rows = $dom->find('.section_' . $this->getScope() . ' table tr');
             
-            // Change the data structure for optimization
-            if ($value && $label) {
-                $items[trim($label)] = $value;
+            // if there is no skills in the occupation, throw exception.
+            if($rows->count() == 0){
+                throw new Exception("Can not find skills of O*NET-SOC Code: $occupation_code");
             }
-        }
 
-        return $items;
+            foreach ($rows as $row) {
+                $value_el = $row->find('.report2a b');
+                $value = $value_el->count() ? ($value_el[0])->text : null;
+                $label_el = $row->find('.report2 .moreinfo b');
+                $label = $label_el->count() ? ($label_el[0])->text : null;
+                $description_el = $row->find('.report2 .moreinfo');
+                $description = $description_el->count() ? ($description_el[0])->text : null;
+
+                if ($value && $label) {
+                    $items[] = [
+                        'label' => trim($label),
+                        'value' => $value,
+                        'description' => trim(str_replace(['&#8212;'], '', $description))
+                    ];
+                }
+            }
+            return $items;
+        });
     }
 }

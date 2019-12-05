@@ -48,15 +48,34 @@
                 </div>
             </template>
         </div>
+        <div class="row" v-show="match > 0">
+            <div class="col-12 text-center">
+                <div class="form">
+                    <div class="form-group row">
+                        <div class="col-md-5">
+                            <h3>Occupation 1's Skills</h3>
+                            <show-skill :occupationArray="occupationOneSkills"></show-skill>
+                        </div>
+                        <div class="col-md-5">
+                            <h3>Occupation 2's Skills</h3>
+                            <show-skill :occupationArray="occupationTwoSkills"></show-skill>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
     import SelectOccupation from '../components/form-controls/SelectOccupation';
+    import ShowSkill from '../components/ShowSkill';
+
     export default {
         name: 'home-page',
         components: {
-            SelectOccupation
+            SelectOccupation,
+            ShowSkill
         },
         async created() {
             let response = await this.axios.get('/api/occupations');
@@ -70,6 +89,8 @@
                 match: null,
                 occupations: [],
                 errorMessage: null,
+                occupationOneSkills: [],
+                occupationTwoSkills: [],
             }
         },
         methods: {
@@ -77,12 +98,16 @@
                 this.loading = true;
                 this.errorMessage = null;
                 this.match = null,
+                this.occupationOneSkills = [],
+                this.occupationTwoSkills = [],
                 this.axios.post('/api/compare', {
                     occupation_1: this.occupation_1,
                     occupation_2: this.occupation_2
                 }).then((response) => {
                     this.loading = false;
                     this.match = response.data.match;
+                    this.occupationOneSkills = response.data.occupation_1;
+                    this.occupationTwoSkills = response.data.occupation_2;
                 }).catch((error) => {
                     this.errorMessage = error.response.data.message;
                     this.loading = false;
